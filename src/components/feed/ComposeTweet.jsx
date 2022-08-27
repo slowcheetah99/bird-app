@@ -10,7 +10,8 @@ import Tweet from "./Tweet";
 import { useBirdContext } from "../../helpers/hooks/useBirdContext";
 
 export default function ComposeTweet() {
-  const { posts, dispatch } = useBirdContext();
+  const { posts, dispatch, user } = useBirdContext();
+  console.log(user);
   return (
     <TweetWrapper>
       <div className="header">
@@ -18,7 +19,9 @@ export default function ComposeTweet() {
         <Sparkles />
       </div>
       <div className="tweet">
-        <Profile />
+        <Profile>
+          <img src={`${user.image}`} alt="profile image" />
+        </Profile>
         <input type="text" placeholder="What's happening?" />
       </div>
       <div className="tweet-icons">

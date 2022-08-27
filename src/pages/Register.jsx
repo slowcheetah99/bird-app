@@ -7,6 +7,9 @@ import { AiFillApple as AppleIcon } from "react-icons/ai";
 import { CloseForm } from "../styles/LoginStyles";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import Alert from "../components/bytes/Alert";
+import { useBirdContext } from "../helpers/hooks/useBirdContext";
+import { faker } from "@faker-js/faker";
 
 const slideIn = {
   in: {
@@ -26,29 +29,70 @@ const slideOut = {
   },
 };
 export default function Register() {
-  const [visible, setVisible] = useState(true);
   const [text, setText] = useState("");
   const [password, setPassword] = useState("");
   const [textError, setTextError] = useState("");
   const [next, setNext] = useState(false);
   const [showText, setShowText] = useState(false);
+  const { visible, users, dispatch } = useBirdContext();
+  const emailTest =
+    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const passTest =
+    /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$/;
   const handleNext = (e) => {
     e.preventDefault();
     if (text) {
-      setPassword("");
+      const passed = emailTest.test(text);
+      if (!passed) {
+        setTextError("Please enter a valid email address");
+        setTimeout(() => {
+          setTextError("");
+        }, 5000);
+        return;
+      }
       setNext(true);
       return;
     }
     setTextError("Please fill out this field");
+    setTimeout(() => {
+      setTextError("");
+    }, 5000);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password) {
       //do validation
+      const strongPass = passTest.test(password);
+      if (!strongPass) {
+        setTextError(
+          "Password must be strong, have an uppercase and lowercase letter, a number and a special character"
+        );
+        setTimeout(() => {
+          setTextError("");
+        }, 5000);
+        return;
+      }
+      let user = {
+        userId: faker.datatype.uuid(),
+        image: faker.internet.avatar(),
+        name: faker.name.fullName(),
+        email: text,
+        password,
+        username: faker.internet.userName(),
+        about: faker.lorem.paragraph(),
+        slug: faker.lorem.slug(),
+        createdAt: Date.now(),
+      };
+      localStorage.setItem("BIRD_APP_USERS", JSON.stringify([...users, user]));
+      dispatch({ type: "CREATE_USER", payload: user });
       window.location.pathname = "/";
+      return;
     }
     setTextError("Please fill out this field");
+    setTimeout(() => {
+      setTextError("");
+    }, 5000);
     return;
   };
 
@@ -104,17 +148,39 @@ export default function Register() {
                   variants={slideOut}
                 >
                   <Input
-                    type={showText ? "text" : "password"}
+                    type={showText ? "password" : "text"}
                     placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="false"
                     value={password}
+                    minLength={8}
+                    maxLength={16}
                   />
-                  <input
-                    type="checkbox"
-                    onChange={() => setShowText((state) => !state)}
-                  />
-                  {textError && <p>{textError}</p>}
+                  <div className="checkbox-div">
+                    <input
+                      type="checkbox"
+                      onChange={() => setShowText((state) => !state)}
+                    />
+                    <span>Show password</span>
+                  </div>
+                  {textError && (
+                    <div>
+                      <p
+                        style={{
+                          color: "crimson",
+                          fontSize: "0.9rem",
+                          textAlign: "left",
+                          width: "100%",
+                          marginInline: "auto",
+                        }}
+                      >
+                        {textError}
+                      </p>
+                      {/* {setTimeout(() => {
+                        <Alert error={textError} />;
+                      }, 5000)} */}
+                    </div>
+                  )}
                   <Apple onClick={handlePrev}>Prev</Apple>
                   <Apple onClick={handleSubmit} type="submit">
                     Submit
@@ -139,7 +205,16 @@ export default function Register() {
                     onChange={(e) => setText(e.target.value)}
                     value={text}
                   />
-                  {textError && <p>{textError}</p>}
+                  {textError && (
+                    <div>
+                      <p style={{ color: "crimson", fontSize: "0.9rem" }}>
+                        {textError}
+                      </p>
+                      {/* {setTimeout(() => {
+                        <Alert error={textError} />;
+                      }, 5000)} */}
+                    </div>
+                  )}
                   <Apple onClick={handleNext}>Next</Apple>
                 </motion.div>
               )}

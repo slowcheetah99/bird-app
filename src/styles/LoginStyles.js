@@ -12,6 +12,23 @@ export const FormOverlay = styled.div`
   display: grid;
   place-items: center;
   background-color: rgba(0, 0, 0, 0.3);
+
+  div.checkbox-div {
+    display: flex;
+    align-items: center;
+    column-gap: 0 !important;
+
+    input {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    span {
+      width: fit-content;
+      font-size: 0.9rem;
+      margin-left: 10px;
+    }
+  }
 `;
 export const Form = styled.form`
   height: 90%;

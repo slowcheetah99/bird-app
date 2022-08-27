@@ -46,9 +46,14 @@ export const Profile = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 100%;
-  border: 2px solid #000;
-  background-color: dodgerblue;
   margin-right: -0.25rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 `;
 
 export const TweetWrapper = styled.div`

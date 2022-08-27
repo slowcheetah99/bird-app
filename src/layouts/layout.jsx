@@ -22,7 +22,14 @@ import {
 import { FcGoogle as GoogleIcon } from "react-icons/fc";
 import { AiFillApple as AppleIcon } from "react-icons/ai";
 import banner from "../assets/banner.png";
+import { useBirdContext } from "../helpers/hooks/useBirdContext";
 export default function Layout({ children }) {
+  const { dispatch } = useBirdContext();
+  function handleClick() {
+    dispatch({
+      type: "SET_VISIBLE",
+    });
+  }
   return (
     <Wrapper>
       <Body>
@@ -45,7 +52,7 @@ export default function Layout({ children }) {
                 <span>Sign up with Apple</span>
               </Apple>
               <p>or</p>
-              <Email>Sign up with phone or email</Email>
+              <Email onClick={handleClick}>Sign up with phone or email</Email>
             </Cta>
           </Content>
           <p className="tos">

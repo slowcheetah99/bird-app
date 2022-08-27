@@ -1,9 +1,4 @@
 import { createContext, useReducer } from "react";
-// import { generatePosts } from "../../../Seed";
-const posts = JSON.parse(localStorage.getItem("BIRD_APP_KEY"));
-
-// localStorage.setItem("BIRD_APP_KEY", JSON.stringify(tweets));
-
 export const BirdContext = createContext();
 
 export const birdReducer = (state, action) => {
@@ -28,6 +23,23 @@ export const birdReducer = (state, action) => {
         ...state,
         posts: action.payload,
       };
+    case "CREATE_USER":
+      return {
+        ...state,
+        users: [...state.users, action.payload],
+        user: action.payload,
+      };
+    case "SET_USER":
+      console.log(action.payload);
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case "SET_VISIBLE":
+      return {
+        ...state,
+        visible: true,
+      };
     default:
       return state;
   }
@@ -38,6 +50,9 @@ export const BirdProvider = ({ children }) => {
   const [state, dispatch] = useReducer(birdReducer, {
     posts,
     currPost: null,
+    visible: false,
+    users: JSON.parse(localStorage.getItem("BIRD_APP_USERS")) || [],
+    user: null
   });
 
   return (
